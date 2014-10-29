@@ -229,14 +229,13 @@ typedef enum {
     
     [self addChildViewController:_centerViewController];
     [self.view addSubview:[_centerViewController view]];
-    [((UIViewController *)_centerViewController) view].frame = (CGRect){.origin = origin, .size=centerViewController.view.frame.size};
-    
+    [_centerViewController view].frame = (CGRect){.origin = origin, .size=centerViewController.view.frame.size};
     [_centerViewController didMoveToParentViewController:self];
-    
+
     if(self.shadow) {
         [self.shadow setShadowedView:centerViewController.view];
     } else {
-        self.shadow = [MFSideMenuShadow shadowWithView:[_centerViewController view]];
+    self.shadow = [MFSideMenuShadow shadowWithView:[_centerViewController view]];
     }
     [self.shadow draw];
     [self addCenterGestureRecognizers];
@@ -738,7 +737,7 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
     };
     
     if(animated) {
-        CGFloat centerViewControllerXPosition = ABS([self.centerViewController view].frame.origin.x);
+        CGFloat centerViewControllerXPosition = ABS([self.centerViewController view].transform.tx);
         CGFloat duration = [self animationDurationFromStartPosition:centerViewControllerXPosition toEndPosition:offset];
         
         [UIView animateWithDuration:duration animations:^{
@@ -755,10 +754,14 @@ shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherG
 }
 
 - (void) setCenterViewControllerOffset:(CGFloat)xOffset {
-    CGRect frame = [self.centerViewController view].frame;
-    frame.origin.x = xOffset;
-    [self.centerViewController view].frame = frame;
-    
+    if (xOffset > 0) {
+        CGFloat scale = (xOffset / self.leftMenuWidth) * 0.3160211268;
+        CGFloat xAdjustment = (scale * [self.centerViewController view].bounds.size.width) / 2;
+        [self.centerViewController view].transform = CGAffineTransformConcat(CGAffineTransformMakeScale(1.0 - scale, 1.0 - scale), CGAffineTransformMakeTranslation(xOffset - xAdjustment, 0));
+    } else {
+        [self.centerViewController view].transform = CGAffineTransformIdentity;
+    }
+
     if(!self.menuSlideAnimationEnabled) return;
     
     if(xOffset > 0){

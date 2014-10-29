@@ -79,13 +79,14 @@
 }
 
 - (void)show {
-    CGRect pathRect = self.shadowedView.bounds;
-    pathRect.size = self.shadowedView.frame.size;
-    self.shadowedView.layer.shadowPath = [UIBezierPath bezierPathWithRect:pathRect].CGPath;
+    CGRect pathRect = CGRectInset(self.shadowedView.frame, -15, 0);
+    pathRect.size.height = 20.0;
+    pathRect.origin.y = CGRectGetMaxY(self.shadowedView.frame) + 20.0;
+
+    self.shadowedView.layer.shadowPath = [UIBezierPath bezierPathWithOvalInRect:pathRect].CGPath;
     self.shadowedView.layer.shadowOpacity = self.opacity;
     self.shadowedView.layer.shadowRadius = self.radius;
     self.shadowedView.layer.shadowColor = [self.color CGColor];
-    self.shadowedView.layer.rasterizationScale = [[UIScreen mainScreen] scale];
 }
 
 - (void)hide {
