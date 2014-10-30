@@ -414,7 +414,7 @@ typedef enum {
 - (void) setLeftSideMenuFrameToClosedPosition {
     if(!self.leftMenuViewController) return;
     CGRect leftFrame = [self.leftMenuViewController view].frame;
-    leftFrame.size.width = self.leftMenuWidth;
+    leftFrame.size.width = self.view.bounds.size.width;
     leftFrame.origin.x = (self.menuSlideAnimationEnabled) ? -1*leftFrame.size.width / self.menuSlideAnimationFactor : 0;
     leftFrame.origin.y = 0;
     [self.leftMenuViewController view].frame = leftFrame;
@@ -434,7 +434,7 @@ typedef enum {
 
 - (void)alignLeftMenuControllerWithCenterViewController {
     CGRect leftMenuFrame = [self.leftMenuViewController view].frame;
-    leftMenuFrame.size.width = _leftMenuWidth;
+    leftMenuFrame.size.width = self.view.bounds.size.width;
     
     CGFloat xOffset = [self.centerViewController view].frame.origin.x;
     CGFloat xPositionDivider = (self.menuSlideAnimationEnabled) ? self.menuSlideAnimationFactor : 1.0;
